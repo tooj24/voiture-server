@@ -18,7 +18,7 @@ const voitureSchema: Schema = new Schema({
   price: {
     type: String,
     required: true,
-  },
+  }
 })
 
 const Voiture = mongoose.model<VoitureDoc>('Voiture', voitureSchema)

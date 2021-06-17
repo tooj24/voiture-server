@@ -16,7 +16,7 @@ export default {
   // créer utilisateur
   create: async (req: Request, res: Response) => {
     try {
-      const { email, password, lastname, firstname } = req.body;
+      const { email, pseudo, password, lastname, firstname } = req.body;
       // hash password
       const hash = bcrypt.hashSync(password, 10);
       // store user
@@ -25,6 +25,7 @@ export default {
         password: hash,
         lastname: lastname,
         firstname: firstname,
+        pseudo: pseudo,
       });
       await user.save();
       return res.status(201).send(user);

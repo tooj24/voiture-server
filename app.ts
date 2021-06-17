@@ -8,6 +8,7 @@ import auth from './src/controllers/auth';
 import { DATABASE_URL } from './src/config/mongo';
 import { UserRouter } from './src/routes/user';
 import { VoitureRouter } from './src/routes/voiture';
+import { CommentRouter } from './src/routes/comment';
 
 const app = express();
 const port = 8000;
@@ -35,6 +36,7 @@ app.use(router.post('/connexion', auth.login))
 
 app.use('/utilisateurs', UserRouter);
 app.use('/voitures', VoitureRouter);
+app.use('/commentaires', CommentRouter);
 
 /**
  * Start server
