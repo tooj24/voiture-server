@@ -5,6 +5,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { DATABASE_URL } from './src/config/mongo';
 import { UserRouter } from './src/routes/user';
+import auth from './src/controllers/auth';
 
 const app = express();
 const port = 8000;
@@ -27,6 +28,8 @@ mongoose.connect(DATABASE_URL, {
 /**
  * Routes
  */
+const router = express.Router();
+app.use(router.post('/connexion', auth.login))
 app.use('/utilisateurs',UserRouter);
 
 /**

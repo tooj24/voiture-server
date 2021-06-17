@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from "../models/user"
+import bcrypt from "bcrypt";
 
 export default {
   // liste des utilisateurs
@@ -16,16 +17,20 @@ export default {
   create: async (req: Request, res: Response) => {
     try {
       const { email, password, lastname, firstname } = req.body;
+      // hash password
+      const hash = bcrypt.hashSync(password, 10);
+      // store user
       const user = new User({
         email: email,
-        password: password,
+        password: hash,
         lastname: lastname,
         firstname: firstname,
       });
-      await user.save()
-      return res.status(201).send(user)
+      await user.save();
+      return res.status(201).send(user);
     } catch (error) {
-      return res.status(500).send({...error});
+      return res.status(500).send({ ...error });
     }
   }
+
 }

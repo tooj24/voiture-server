@@ -1,31 +1,57 @@
-import { model, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
 
-interface IUser {
-  email: string,
-  password: string,
-  firstname: string,
-  lastname: string
+interface UserDoc extends Document {
+  lastname: string;
+  firstname: string;
+  email: string;
+  pseudo: string;
+  password: string;
+  comparePwd: (pwd: string) => Promise<boolean|any>;
 }
 
-const userSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
+const userSchema: Schema = new Schema({
   lastname: {
     type: String,
-    required: true
+    required: true,
   },
   firstname: {
     type: String,
-    required: true
+    required: true,
   },
-});
+  pseudo: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+})
 
-const User = model<IUser>('user', userSchema);
+userSchema.methods.comparePwd = async function (pass) {
+  const user = this as UserDoc;
 
-export { User };
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(pass, user.password, (err: any, isMatch: boolean) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (!isMatch) {
+        return reject(false);
+      }
+
+      resolve(true);
+    });
+  });
+}
+
+const User = mongoose.model<UserDoc>('User', userSchema)
+
+export { User }
