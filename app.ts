@@ -27,7 +27,7 @@ mongoose.connect(DATABASE_URL, {
 /**
  * Routes
  */
-app.use(UserRouter);
+app.use('/utilisateurs',UserRouter);
 
 /**
  * Start server
