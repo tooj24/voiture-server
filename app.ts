@@ -3,9 +3,11 @@ import { json } from 'body-parser';
 import logger from 'morgan';
 import cors from 'cors';
 import mongoose from 'mongoose';
+
+import auth from './src/controllers/auth';
 import { DATABASE_URL } from './src/config/mongo';
 import { UserRouter } from './src/routes/user';
-import auth from './src/controllers/auth';
+import { VoitureRouter } from './src/routes/voiture';
 
 const app = express();
 const port = 8000;
@@ -30,7 +32,9 @@ mongoose.connect(DATABASE_URL, {
  */
 const router = express.Router();
 app.use(router.post('/connexion', auth.login))
-app.use('/utilisateurs',UserRouter);
+
+app.use('/utilisateurs', UserRouter);
+app.use('/voitures', VoitureRouter);
 
 /**
  * Start server
