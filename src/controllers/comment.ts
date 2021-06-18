@@ -1,4 +1,5 @@
 import { Response, Request } from 'express';
+import { validationResult } from 'express-validator';
 import { Comment } from '../models/comment';
 
 export default {
@@ -14,7 +15,9 @@ export default {
         .skip(perPage*parseInt(page))
         .sort({
           createdAt: 'desc'
-        });
+        })
+        .populate("owner")
+        ;
       return res.status(200).send(comments);
     } catch (error) {
       return res.status(500).send({ error: error });
@@ -25,15 +28,22 @@ export default {
   postComment: async (req: any, res: Response) => {
     const { id: voitureId } = req.params; // id voiture
     const userId = req.userId; // id user
+    const errors = validationResult(req); 
+
+    // renvoyer les erreurs
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
     try {
       const { content } = req.body;
 
-      const comment = new Comment({
+      let comment = new Comment({
         content: content,
         owner: userId,
         voiture: voitureId
       });
+      comment = await comment.populate('owner').execPopulate()
       await comment.save();
       return res.status(201).send(comment);
     } catch (error) {

@@ -31,11 +31,7 @@ const userSchema: Schema = new Schema({
   password: {
     type: String,
     required: true,
-  },
-  comments: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Comment'
-  }]
+  }
 })
 
 userSchema.methods.comparePwd = async function (pass) {

@@ -22,7 +22,7 @@ export default {
           userId: user._id,
           pseudo: user.pseudo,
         };
-        const token = jwt.sign(payload, SECRET_KEY);
+        const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '1h'});
         return res.status(200).send({ token })
       } catch (err) {
         return res.status(401).send({ error: 'Invalid password or email' });
