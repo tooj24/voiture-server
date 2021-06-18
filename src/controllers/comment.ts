@@ -4,10 +4,17 @@ import { Comment } from '../models/comment';
 export default {
   // liste des commentaire
   getComments: async (req: Request, res: Response) => {
-    const { id: voitureId } = req.params; // id voiture
+    const { id: voitureId, page = '0' } = req.params; // id voiture
+    const perPage = 3;
 
     try {
-      const comments = await Comment.find({ voiture: voitureId });
+      const comments = await Comment
+        .find({ voiture: voitureId })
+        .limit(perPage)
+        .skip(perPage*parseInt(page))
+        .sort({
+          createdAt: 'desc'
+        });
       return res.status(200).send(comments);
     } catch (error) {
       return res.status(500).send({ error: error });

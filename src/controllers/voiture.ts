@@ -11,6 +11,17 @@ export default {
     }
   },
 
+  getVoiture: async(req: Request, res: Response) => {
+    try {
+      const { id } = req.params
+      const voiture = await Voiture.findOne({_id: id});
+      return res.status(200).send(voiture);
+    } catch (error) {
+      return res.status(500).send({ error: error });
+    }
+    
+  },
+
   createVoiture: async (req: Request, res: Response) => {
     try {
       const { marque, description, price } = req.body;

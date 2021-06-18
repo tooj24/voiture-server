@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { User } from "../models/user"
+import { validationResult } from 'express-validator';
 import bcrypt from "bcrypt";
+import { User } from "../models/user"
 
 export default {
   // liste des utilisateurs
@@ -17,6 +18,13 @@ export default {
   create: async (req: Request, res: Response) => {
     try {
       const { email, pseudo, password, lastname, firstname } = req.body;
+      const errors = validationResult(req);
+
+      // renvoyer les erreurs
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
       // hash password
       const hash = bcrypt.hashSync(password, 10);
       // store user

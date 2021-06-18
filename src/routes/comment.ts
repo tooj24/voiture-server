@@ -5,7 +5,7 @@ import {decode} from '../middlewares/jwt';
 const router = express.Router();
 
 // liste des commentaire
-router.get('/:id', decode, commentController.getComments);
+router.get('/:id/:page?', decode, commentController.getComments);
 
 // commenter
 router.post('/:id', decode, commentController.postComment);
