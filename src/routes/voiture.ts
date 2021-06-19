@@ -1,4 +1,6 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import { decode } from '../middlewares/jwt';
+import { voitureValidation } from '../validation/voiture';
 import voitureController from '../controllers/voiture';
 
 const router = express.Router();
@@ -9,7 +11,7 @@ router.get('/', voitureController.getVoitures);
 // get voiture
 router.get('/:id', voitureController.getVoiture);
 
-// créer un utilisateur
-router.post('/', voitureController.createVoiture);
+// créer une voiture
+router.post('/', voitureValidation, decode, voitureController.createVoiture);
 
 export { router as VoitureRouter };
