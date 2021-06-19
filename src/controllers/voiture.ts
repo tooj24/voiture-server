@@ -4,18 +4,19 @@ import { Voiture } from '../models/voiture';
 
 export default {
   getVoitures: async (req: Request, res: Response) => {
+    const { page = '1' }  = req.query;
     const perPage = 3;
-    const {page = '0'} = req.query;
+    const p = parseInt(page.toString());
     try {
       const voitures = await Voiture
         .find()
         .limit(perPage)
-        .skip(perPage * (+page));
+        .skip(perPage * (p - 1));
 
       Voiture.countDocuments().exec((err: any, count: number) => {
         return res.status(200).send({
-          page: page,
-          pages: Math.round(count / perPage),
+          page: p,
+          pages: Math.ceil(count / perPage),
           voitures: voitures
         });
       })

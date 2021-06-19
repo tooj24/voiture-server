@@ -5,20 +5,28 @@ import { Comment } from '../models/comment';
 export default {
   // liste des commentaire
   getComments: async (req: Request, res: Response) => {
-    const { id: voitureId, page = '0' } = req.params; // id voiture
+    const { id: voitureId, page = '1' } = req.params; // id voiture
     const perPage = 3;
+    const p = parseInt(page.toString());
 
     try {
       const comments = await Comment
         .find({ voiture: voitureId })
         .limit(perPage)
-        .skip(perPage*parseInt(page))
+        .skip(perPage * (p - 1))
         .sort({
           createdAt: 'desc'
         })
-        .populate("owner")
-        ;
-      return res.status(200).send(comments);
+        .populate("owner");
+
+      Comment.countDocuments({ voiture: voitureId }).exec((err: any, count: number) => {
+        return res.status(200).send({
+          page: p,
+          pages: Math.ceil(count / perPage),
+          total: count,
+          comments: comments
+        });
+      })
     } catch (error) {
       return res.status(500).send({ error: error });
     }
@@ -28,7 +36,7 @@ export default {
   postComment: async (req: any, res: Response) => {
     const { id: voitureId } = req.params; // id voiture
     const userId = req.userId; // id user
-    const errors = validationResult(req); 
+    const errors = validationResult(req);
 
     // renvoyer les erreurs
     if (!errors.isEmpty()) {
